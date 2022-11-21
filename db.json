@@ -10,7 +10,7 @@
     {
       "id": 2,
       "name": "Tanri Misafiri",
-      "author": "Resat Nuri",
+      "author": "Resat Nuri guntekin",
       "isbn": "1111111111113",
       "categoryId": "2"
     },
@@ -30,7 +30,7 @@
     },
     {
       "id": 1665787785058,
-      "name": "Bes Sehir",
+      "name": "Bes Sehir 2",
       "author": "Ahmet Hamdi Tanpinar",
       "isbn": "1111111111112",
       "categoryId": "3"

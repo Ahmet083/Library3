@@ -23,12 +23,12 @@ const Header = () => {
         >
           <ul className="navbar-nav mr-auto ">
             <li className="nav-item active">
-              <Link className="nav-link text-warning" to="/">
-                Kitaplik <span className="sr-only">(current)</span>
+              <Link className="nav-link text-warning" to="/add-Book">
+                Kitap Ekle <span className="sr-only">(current)</span>
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link text-warning" to="/">
+              <Link className="nav-link text-warning" to="/categories">
                Kategori
               </Link>
             </li>

@@ -2,24 +2,27 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Loading from "./Loading";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 const AddBookForm = () => {
-  const navigate = useNavigate()
-  const [categories, setCategories] = useState(null);
+  const { categoriesState } = useSelector((state) => state)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+   //const [categories, setCategories] = useState(null);
   const [bookname, setBookName] = useState("");
   const [author, setAuthor] = useState("");
   const [isbn, setIsbn] = useState("");
   const [category, setCategory] = useState("");
-  useEffect(() => {
-    axios
-      .get("http://localhost:3004/categories")
-      .then((res) => {
-        console.log("Categories");
-        setCategories(res.data);
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:3004/categories")
+  //     .then((res) => {
+  //       console.log("Categories");
+  //       setCategories(res.data);
         
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -38,6 +41,7 @@ const AddBookForm = () => {
    axios.post("http://localhost:3004/books", newBook)
    .then((res)=> {
     console.log("kitap ekle res", res);
+    dispatch({type: "ADD_BOOK", payload: newBook});
     setBookName("");
     setAuthor("");
     setIsbn("");
@@ -47,7 +51,7 @@ const AddBookForm = () => {
    .catch((err) => console.log(err))
   };
 
-  if (categories == null) {
+  if (categoriesState.success !== true) {
     return <Loading />;
   }
   return (
@@ -90,7 +94,7 @@ const AddBookForm = () => {
               onChange={(event) => setCategory(event.target.value)}
             >
               <option selected></option>
-              {categories.map((cat) => {
+              {categoriesState.categories.map((cat) => {
                 return <option key={cat.id} value={cat.id}>{cat.name}</option>;
               })}
             </select>

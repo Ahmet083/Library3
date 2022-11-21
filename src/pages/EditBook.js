@@ -6,11 +6,14 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loading from "../component/Loading";
 import Modal from "../component/Modal";
+import { useSelector, useDispatch } from "react-redux";
 
 
 
 
 const EditBook = (props) => {
+  const { categoriesState, booksState } = useSelector((state)=> state)
+  const dispatch = useDispatch();
   const params = useParams();
   console.log("params", params)
   const navigate = useNavigate()
@@ -19,29 +22,44 @@ const EditBook = (props) => {
   const [author, setAuthor] = useState("")
   const [isbn, setIsbn] = useState("")
   const [category, setCategory] = useState("")
-  const [categories, setCategories] = useState(null)
+  //const [categories, setCategories] = useState(null)
   const [showModal, setShowModal] = useState(false)
   
 
   useEffect(() => {
-    axios.get(`http://localhost:3004/books/${params.bookId}`)
-      .then((res) => {
-        console.log(res.data);
-        setBookName(res.data.name);
-        setAuthor(res.data.author);
-        setIsbn(res.data.isbn);
-        setCategory(res.data.categoryId);
+    console.log(booksState.books, params.bookId);
+    const arananKitap = booksState.books.find(
+      (item) => item.id == params.bookId
+    );
+    if (arananKitap === undefined) {
+      navigate("/");
+      return;
+    }
+        console.log("arananKitap", arananKitap);
+        setBookName(arananKitap?.name);
+        setAuthor(arananKitap?.author);
+        setIsbn(arananKitap?.isbn);
+        setCategory(arananKitap?.categoryId);
+
+    // axios.get(`http://localhost:3004/books/${params.bookId}`)
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     setBookName(res.data.name);
+    //     setAuthor(res.data.author);
+    //     setIsbn(res.data.isbn);
+    //     setCategory(res.data.categoryId);
 
 
-        axios
-          .get("http://localhost:3004/categories")
-          .then((res) => {
-            setCategories(res.data);
+      //   axios
+      //     .get("http://localhost:3004/categories")
+      //     .then((res) => {
+      //       setCategories(res.data);
 
-          })
-          .catch((err) => console.log('categories error', err));
-      })
-      .catch((err) => console.log(err))
+      //     })
+      //     .catch((err) => console.log('categories error', err));
+       //})
+      // .catch((err) => console.log(err))
+      document.title = `Kitaplik - Kitap Duzenle - ${arananKitap.name}` 
   }, [])
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -67,7 +85,8 @@ const EditBook = (props) => {
     axios
       .put(`http://localhost:3004/books/${params.bookId}`, updateBook)
       .then((res) => {
-        console.log(res)
+        console.log(res);
+        dispatch({ type: "EDIT_BOOK", payload: updateBook });
         setShowModal(false)
         console.log("setShowModal", Modal)
         navigate("/")
@@ -79,7 +98,7 @@ const EditBook = (props) => {
 
 
 
-  if (categories === null) {
+  if (categoriesState.success === false || booksState.success !== true) {
     return <Loading />
   }
 
@@ -126,7 +145,7 @@ const EditBook = (props) => {
                 onChange={(event) => setCategory(event.target.value)}
               >
                 <option selected>Kategori Secin</option>
-                {categories.map((cat) => {
+                {categoriesState.categories.map((cat) => {
                   return <option key={cat.id} value={cat.id}>{cat.name}</option>;
                 })}
               </select>
